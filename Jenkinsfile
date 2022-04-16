@@ -4,13 +4,13 @@ pipeline {
     stages {
         stage('Git checkout') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/engrbayo/demo-repository.git']]])
+                git 'https://github.com/tkibnyusuf/realone-repo.git'
             }
         }
         
         stage('Build with maven') {
             steps {
-                sh 'cd SampleWebApp && mvn clean install'
+                sh 'cd SampleWebApp && mvn clean package'
             }
         }
         
@@ -18,17 +18,12 @@ pipeline {
             steps {
                 sh 'cd SampleWebApp && mvn test'
             }
-        }
-        stage('scan with sonar') {
-            steps {
-                withSonarQubeEnv('sonar') {
-                sh "${mvnHome}/bin/mvn -f SampleWebApp/pom.xml sonar:sonar"
-        }
+        
             }
-                 }
+
         stage('Deploy to tomcat') {
             steps {
-                deploy adapters: [tomcat9(credentialsId: 'bfbc1a51-dbf2-43cb-adf8-8badbd2cae9d', path: '', url: 'http://3.89.187.211:8080/')], contextPath: 'myapp', war: '**/*.war'
+                deploy adapters: [tomcat9(credentialsId: 'ddde4cf3-7f90-4926-b906-9eec9a511b26', path: '', url: 'http://54.144.59.1:8080/')], contextPath: 'mywebapp', war: '**/*.war'
             }
         }
     }
