@@ -20,6 +20,14 @@ pipeline {
             }
         
             }
+        stage ('Code Qualty Scan') {
+            
+           steps {
+                  withSonarQubeEnv('sonarserver') {
+             sh "mvn -f MywebApp/pom.xml sonar:sonar"      
+               }
+            }
+       }
 
         stage('Deploy to tomcat') {
             steps {
