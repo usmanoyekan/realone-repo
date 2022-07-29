@@ -10,7 +10,7 @@ pipeline {
         
         stage('Build with maven') {
             steps {
-                sh 'cd SampleWebApp && mvn clean package'
+                sh 'cd SampleWebApp && clean install'
             }
         }
         
@@ -23,7 +23,7 @@ pipeline {
 
         stage('Deploy to tomcat') {
             steps {
-                deploy adapters: [tomcat9(credentialsId: 'ddde4cf3-7f90-4926-b906-9eec9a511b26', path: '', url: 'http://54.144.59.1:8080/')], contextPath: 'mywebapp', war: '**/*.war'
+                deploy adapters: [tomcat9(credentialsId: 'bae5600c-76c5-45f3-93bb-69797f3d5779', path: '', url: 'http://35.174.106.73:8080/')], contextPath: 'myapp', war: '**/*.war'
             }
         }
     }
