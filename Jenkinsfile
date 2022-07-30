@@ -20,6 +20,14 @@ pipeline {
             }
         
             }
+        stage ('Code Qualty Scan') {
+
+           steps {
+                  withSonarQubeEnv('sonarserver') {
+             sh "mvn -f SampleWebApp/pom.xml sonar:sonar"      
+               }
+            }
+       }
         
         stage('push to Nexus') {
           steps {    
