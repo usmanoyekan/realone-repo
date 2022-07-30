@@ -20,7 +20,7 @@ pipeline {
             }
         
             }
-        stage ('Code Qualty Scan') {
+        stage('Code Qualty Scan') {
 
            steps {
                   withSonarQubeEnv('sonarserver') {
@@ -29,7 +29,6 @@ pipeline {
             }
        }
         stage('Quality Gate') {
-
           steps {
                  waitForQualityGate abortPipeline: true
               }
