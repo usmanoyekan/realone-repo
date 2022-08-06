@@ -28,10 +28,10 @@ pipeline {
                 script{
                     withCredentials([string(credentialsId: 'docker-password', variable: 'docker_pass')]) {
                              sh '''
-                                docker build -t 3.82.250.85:8083/springapp:${VERSION} .
-                                docker login -u admin -p $docker_pass 3.82.250.85:8083
-                                docker push  3.82.250.85:8083/springapp:${VERSION}
-                                docker rmi 3.82.250.85:8083/springapp:${VERSION}
+                                sudo docker build -t 3.82.250.85:8083/springapp:${VERSION} .
+                                sudo docker login -u admin -p $docker_pass 3.82.250.85:8083
+                                sudo docker push  3.82.250.85:8083/springapp:${VERSION}
+                                sudo docker rmi 3.82.250.85:8083/springapp:${VERSION}
                             '''
                        }
                     }
