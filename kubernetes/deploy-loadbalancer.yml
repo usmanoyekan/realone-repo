@@ -15,8 +15,8 @@ spec:
         app: nginx-app
     spec:
       containers:
-      - name: nginx-container
-        image: nginx:1.7.9
+      - name: tomcat-container
+        image: 44.202.93.29:8083/springapp:${VERSION}
         ports:
         - containerPort: 80
 
