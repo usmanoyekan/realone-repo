@@ -1,34 +1,39 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ak-angular-app-poc-deployment
+  name: nginx-deployment
+  labels:
+    app: nginx-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ak-angular-app
+      app: nginx-app
   template:
     metadata:
       labels:
-        app: ak-angular-app
+        app: nginx-app
     spec:
       containers:
-      - name: ak-angular-app
-        image: ananthkannan/myspringbootapp:latest
+      - name: nginx-container
+        image: nginx:1.7.9
         ports:
-        - containerPort: 8085
+        - containerPort: 80
+
         
 # service type loadbalancer       
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: ak-angular-svc
+  name: loadbalancer-service
+  labels:
+    app: test-nodeport
 spec:
   selector:
-    app: ak-angular-app
-  ports:
-    - protocol: TCP
-      port: 8085
-      targetPort: 8085
+    app: nginx-app
   type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
