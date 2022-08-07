@@ -62,6 +62,7 @@ pipeline {
     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
 ]]) { 
                         dir('kubernetes/') {
+                          sh  'aws eks update-kubeconfig --name myapp-eks-cluster --region us-east-1'
                           sh 'helm upgrade --install --set image.repository="3.82.250.85:8083/springapp" --set image.tag="${VERSION}" myjavaapp myapp/ ' 
                         }
                     }
