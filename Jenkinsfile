@@ -64,9 +64,7 @@ pipeline {
                         dir('kubernetes/') {
                           sh  'aws eks update-kubeconfig --name myapp-eks-cluster --region us-east-1'
                           sh 'kubectl apply -f deploy-loadbalancer.yml'
-
-
-' 
+ 
                         }
                     }
                }
