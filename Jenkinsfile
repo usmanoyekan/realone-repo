@@ -26,10 +26,10 @@ pipeline {
         stage("docker build & docker push"){
             steps{
                 script{
-                    withCredentials([string(credentialsId: 'docker-password', variable: 'docker_pass')]) {
+                    withCredentials([string(credentialsId:  'docker_pass', variable: 'docker-password)]) {
                              sh '''
                                 docker build -t 3.82.250.85:8083/springapp:${VERSION} .
-                                docker login -u admin -p $docker_pass 3.82.250.85:8083
+                                docker login -u admin -p $docker-password 3.82.250.85:8083
                                 docker push  3.82.250.85:8083/springapp:${VERSION}
                                 docker rmi 3.82.250.85:8083/springapp:${VERSION}
                             '''
@@ -45,7 +45,7 @@ pipeline {
                              sh '''
                                  helmversion=$( helm show chart myapp | grep version | cut -d: -f 2 | tr -d ' ')
                                  tar -czvf  myapp-${helmversion}.tgz myapp/
-                                 curl -u admin:$docker_pass http://3.82.250.85:8081/repository/helm-repo/ --upload-file myapp-${helmversion}.tgz -v
+                                 curl -u admin:$docker-pass http://3.82.250.85:8081/repository/helm-repo/ --upload-file myapp-${helmversion}.tgz -v
                             '''
                           }
                     }
@@ -55,7 +55,12 @@ pipeline {
          stage('Deploying application on k8s cluster') {
             steps {
                script{
-                   withCredentials([kubeconfigFile(credentialsId: 'kubernetes-config', variable: 'KUBECONFIG')]) {
+                    withCredentials([[
+    $class: 'AmazonWebServicesCredentialsBinding',
+    credentialsId: "mycredentials",
+    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+]]) { 
                         dir('kubernetes/') {
                           sh 'helm upgrade --install --set image.repository="3.82.250.85:8083/springapp" --set image.tag="${VERSION}" myjavaapp myapp/ ' 
                         }
