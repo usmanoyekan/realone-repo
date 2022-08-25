@@ -28,10 +28,10 @@ pipeline {
                 script{
                     withCredentials([string(credentialsId: 'docker-password', variable: 'docker_pass')]) {
                              sh '''
-                                docker build -t 3.236.209.192:8083/springapp:${VERSION} .
-                                docker login -u admin -p $docker_pass 3.236.209.192:8083
-                                docker push  3.236.209.192:8083/springapp:${VERSION}
-                                docker rmi 3.236.209.192:8083/springapp:${VERSION}
+                                docker build -t 44.210.151.230:8083/springapp:${VERSION} .
+                                docker login -u admin -p $docker_pass 44.210.151.230:8083
+                                docker push  44.210.151.230:8083/springapp:${VERSION}
+                                docker rmi 44.210.151.230:8083/springapp:${VERSION}
                                  
                             '''
                        }
@@ -46,7 +46,7 @@ pipeline {
                              sh '''
                                  helmversion=$( helm show chart myapp | grep version | cut -d: -f 2 | tr -d ' ')
                                  tar -czvf  myapp-${helmversion}.tgz myapp/
-                                 curl -u admin:$docker_pass http://3.236.209.192:8081/repository/helm-hosted/ --upload-file myapp-${helmversion}.tgz -v
+                                 curl -u admin:$docker_pass http://44.210.151.230:8081/repository/helm-hosted/ --upload-file myapp-${helmversion}.tgz -v
                             '''
                           }
                     }
@@ -65,7 +65,7 @@ pipeline {
 ]]) { 
                         dir('kubernetes/') {
                           sh 'aws eks update-kubeconfig --name myapp-eks-cluster --region us-east-1'
-                          sh 'kubectl apply -f deploy-loadbalancer.yml'
+                          sh 'helm3 upgrade --install --set image.repository="44.210.151.230:8083/springapp" --set image.tag="${VERSION}" myjavaapp myapp/ ' 
 
 
 
