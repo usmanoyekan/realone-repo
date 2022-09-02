@@ -2,6 +2,11 @@ pipeline {
     agent any
     environment {
         VERSION = "${env.BUILD_ID}"
+        AWS_ACCOUNT_ID="775012328020"
+        AWS_DEFAULT_REGION="us-east-1"
+        IMAGE_REPO_NAME="jenkins-pipeline"
+        IMAGE_TAG="v1"
+        REPOSITORY_URI = "775012328020.dkr.ecr.us-east-1.amazonaws.com/jenkins-pipeline"
     }
     stages {
         stage('Git checkout') {
@@ -23,36 +28,26 @@ pipeline {
         
             }
         
-        stage("docker build & docker push"){
-            steps{
-                script{
-                    withCredentials([string(credentialsId: 'docker-password', variable: 'docker_pass')]) {
-                             sh '''
-                                docker build -t 44.210.151.230:8083/springapp:${VERSION} .
-                                docker login -u admin -p $docker_pass 44.210.151.230:8083
-                                docker push  44.210.151.230:8083/springapp:${VERSION}
-                                docker rmi 44.210.151.230:8083/springapp:${VERSION}
-                                 
-                            '''
-                       }
-                    }
+        
+        stages {
+        
+         stage('Logging into AWS ECR') {
+            steps {
+                script {
+                sh """aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"""
                 }
-            }
-        stage("pushing the helm charts to nexus"){
-            steps{
-                script{
-                    withCredentials([string(credentialsId: 'docker-password', variable: 'docker_pass')]) {
-                          dir('kubernetes/') {
-                             sh '''
-                                 helmversion=$( helm show chart myapp | grep version | cut -d: -f 2 | tr -d ' ')
-                                 tar -czvf  myapp-${helmversion}.tgz myapp/
-                                 curl -u admin:$docker_pass http://44.210.151.230:8081/repository/helm-hosted/ --upload-file myapp-${helmversion}.tgz -v
-                            '''
-                          }
-                    }
-                }
+                 
             }
         }
+        
+             Building Docker images
+          stage('Building image') {
+            steps{
+              script {
+                dockerImage = docker.build "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+        }
+      }
+    }
          
          stage('Deploying application on k8s cluster') {
             steps {
