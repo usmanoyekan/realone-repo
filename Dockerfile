@@ -23,7 +23,7 @@ RUN cp -r techmax-main/* /var/www/html/
 RUN rm -rf techmax-main main.zip
 
 # exposes port 80 on the container
-EXPOSE 80
+EXPOSE 8080
 
 # set the default application that will start when the container start
 ENTRYPOINT ["/usr/sbin/httpd", "-D", "FOREGROUND"]
