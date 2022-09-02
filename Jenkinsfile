@@ -73,7 +73,7 @@ pipeline {
 ]]) { 
                         dir('kubernetes/') {
                           sh 'aws eks update-kubeconfig --name myapp-eks-cluster --region us-east-1'
-                          sh 'helm upgrade --install --set image.repository="44.210.151.230:8083/springapp" --set image.tag="${VERSION}" myjavaapp myapp/ ' 
+                          sh 'helm upgrade --install --set image.repository="${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:$IMAGE_TAG" --set image.tag="${VERSION}" myjavaapp myapp/ ' 
 
 
 
