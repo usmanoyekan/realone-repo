@@ -30,18 +30,19 @@ pipeline {
         
         
          stage('Logging into AWS ECR') {
-            steps {
-                script{
                      environment {
-                       AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
-                       AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
-           }
-                sh """aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"""
+                        AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
+                        AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
+                         
+                   }
+                     steps {
+                       script{
+             
+                         sh """aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"""
                 }
                  
             }
         }
-      }
       
           stage('Building image') {
             steps{
@@ -61,12 +62,12 @@ pipeline {
       }
          
          stage('pull image & Deploying application on k8s cluster') {
-            steps {
-               script{
                     environment {
                        AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
                        AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
-           }
+                 }
+                    steps {
+                      script{
                         dir('kubernetes/') {
                           sh 'aws eks update-kubeconfig --name myapp-eks-cluster --region us-east-1'
                           sh """aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"""
@@ -79,8 +80,4 @@ pipeline {
                     }
                }
             }
-        }
-        
-        }
-
     }
