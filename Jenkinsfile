@@ -61,7 +61,7 @@ pipeline {
         }
       }
          
-         stage('pull image & Deploying application on k8s cluster') {
+         stage('pull image & Deploying application on eks cluster') {
                     environment {
                        AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
                        AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
