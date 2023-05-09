@@ -1,29 +1,14 @@
-FROM amazonlinux:latest
+# Use the official Tomcat image as the base image
+FROM tomcat:latest
 
-# Install dependencies
-RUN yum update -y && \
-    yum install -y httpd && \
-    yum search wget && \
-    yum install wget -y && \
-    yum install unzip -y
+# Remove the default webapps that come with Tomcat
+RUN rm -rf /usr/local/tomcat/webapps/*
 
-# change directory
-RUN cd /var/www/html
+# Copy the .war file into the Tomcat webapps directory
+COPY /SampleWebApp/target/SampleWebApp.war /usr/local/tomcat/webapps/ROOT.war
 
-# download webfiles
-RUN wget https://github.com/tkibnyusuf/techmax/archive/refs/heads/main.zip
+# Expose port 8080 (the default Tomcat port)
+EXPOSE 8080
 
-# unzip folder
-RUN unzip main.zip
-
-# copy files into html directory
-RUN cp -r techmax-main/* /var/www/html/
-
-# remove unwanted folder
-RUN rm -rf techmax-main main.zip
-
-# exposes port 80 on the container
-EXPOSE 80
-
-# set the default application that will start when the container start
-ENTRYPOINT ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+# Start Tomcat when the container starts
+CMD ["catalina.sh", "run"]
