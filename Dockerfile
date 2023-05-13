@@ -7,8 +7,5 @@ RUN rm -rf /usr/share/nginx/html/*
 # Copy the .war file into the Nginx deployment directory
 COPY /SampleWebApp/target/SampleWebApp.war /usr/share/nginx/html/ROOT.war
 
-# Expose port 8080 (the default Tomcat port)
+# Expose port 8080 (the default Nginx port)
 EXPOSE 80
-
-# Start Tomcat when the container starts
-CMD ["catalina.sh", "run"]
