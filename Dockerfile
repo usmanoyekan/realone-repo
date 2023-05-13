@@ -12,7 +12,7 @@ RUN cd /var/www/html
 
 
 # copy files into html directory
-RUN cp -r /SampleWebApp/target/SampleWebApp.war /var/www/html/
+COPY /SampleWebApp/target/SampleWebApp.war /var/www/html/
 
 # exposes port 80 on the container
 EXPOSE 80
