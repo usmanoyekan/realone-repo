@@ -1,13 +1,20 @@
-# Use the official Nginx image as the base image
-FROM nginx:latest
+FROM amazonlinux:latest
 
-# Remove the default webapps that come with Nginx
-RUN rm -rf /usr/share/nginx/html/*
+# Install dependencies
+RUN yum update -y && \
+    yum install -y httpd && \
+    yum search wget && \
+    yum install wget -y && \
+    yum install unzip -y
 
-# Copy the .war file into the Nginx deployment directory
-COPY /SampleWebApp/target/SampleWebApp.war /usr/share/nginx/html/ROOT.war
+# change directory
+RUN cd /var/www/html
 
-# Expose port 8080 (the default Nginx port)
+
+# copy files into html directory
+RUN cp -r /SampleWebApp/target/SampleWebApp.war /var/www/html/
+
+# exposes port 80 on the container
 EXPOSE 80
 
 # set the default application that will start when the container start
