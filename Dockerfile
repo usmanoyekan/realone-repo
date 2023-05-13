@@ -1,5 +1,5 @@
 # Use the official Tomcat image as the base image
-FROM tomcat:latest
+FROM nginx:latest
 
 # Remove the default webapps that come with Tomcat
 RUN rm -rf /usr/local/tomcat/webapps/*
@@ -8,7 +8,7 @@ RUN rm -rf /usr/local/tomcat/webapps/*
 COPY /SampleWebApp/target/SampleWebApp.war /usr/local/tomcat/webapps/ROOT.war
 
 # Expose port 8080 (the default Tomcat port)
-EXPOSE 8080
+EXPOSE 80
 
 # Start Tomcat when the container starts
 CMD ["catalina.sh", "run"]
